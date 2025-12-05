@@ -10,6 +10,7 @@ function App() {
   const [inkColor, setInkColor] = useState('black');
   const [error, setError] = useState(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [facingMode, setFacingMode] = useState('user'); // 'user' (front) or 'environment' (rear)
   const videoRef = React.useRef(null);
   const canvasRef = React.useRef(null);
 
@@ -74,7 +75,16 @@ function App() {
   const startCamera = async () => {
     try {
       setIsCameraOpen(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current && videoRef.current.srcObject) {
+        // Stop any existing stream first
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facingMode }
+      });
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
@@ -83,6 +93,20 @@ function App() {
       setIsCameraOpen(false);
     }
   };
+
+  const toggleCamera = () => {
+    setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
+    // Effect will re-trigger startCamera if we add it, but for simple implementation lets just restart manually or use effect.
+    // Better: call startCamera again immediately state update won't be reflected yet in standard flow without useEffect.
+    // Let's use a useEffect to watch facingMode changes when camera is open.
+  };
+
+  // Add this effect
+  React.useEffect(() => {
+    if (isCameraOpen) {
+      startCamera();
+    }
+  }, [facingMode, isCameraOpen]); // Added isCameraOpen to dependencies to ensure it runs when camera opens
 
   const stopCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
@@ -252,6 +276,9 @@ function App() {
               <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
             </div>
             <div className="camera-controls">
+              <button className="btn" onClick={toggleCamera} style={{ background: '#333', color: 'white' }}>
+                <Camera size={20} /> FLIP
+              </button>
               <button className="btn btn-primary" onClick={captureImage}>
                 <Camera size={20} /> CAPTURE
               </button>

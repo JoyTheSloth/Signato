@@ -285,6 +285,44 @@ body {
   box-shadow: 0 0 15px rgba(255, 0, 51, 0.4);
 }
 
+/* Mobile Adjustments */
+@media (max-width: 960px) {
+  .controls-bar {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .control-group {
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .radio-group {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .camera-modal {
+    width: 95vw;
+    padding: 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 2.5rem;
+  }
+}
+
 .controls-bar {
   background: var(--panel-bg);
   padding: 2rem;
