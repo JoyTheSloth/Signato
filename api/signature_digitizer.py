@@ -5,20 +5,34 @@ import os
 import sys
 
 class SignatureDigitizer:
-    def __init__(self, image_path):
-        self.image_path = image_path
-        self.image = None
+    def __init__(self, input_source):
+        """
+        input_source: Can be a file path (str) or an image array (numpy.ndarray).
+        """
+        self.image_path = None
         self.original_image = None
-        
-        if not os.path.exists(image_path):
-            raise FileNotFoundError(f"Input file not found: {image_path}")
+        self.image = None
+
+        if isinstance(input_source, str):
+            self.image_path = input_source
+            if not os.path.exists(input_source):
+                raise FileNotFoundError(f"Input file not found: {input_source}")
+        elif isinstance(input_source, np.ndarray):
+             self.original_image = input_source
+             self.image = self.original_image.copy()
+        else:
+            raise ValueError("Invalid input source. Must be a file path or numpy array.")
 
     def load_image(self):
-        """Loads the image from disk."""
-        self.original_image = cv2.imread(self.image_path)
-        if self.original_image is None:
-            raise ValueError("Could not load image. Please check the file format.")
-        self.image = self.original_image.copy()
+        """Loads the image from disk if path was provided."""
+        if self.original_image is not None:
+            return # Already loaded from memory
+
+        if self.image_path:
+            self.original_image = cv2.imread(self.image_path)
+            if self.original_image is None:
+                raise ValueError("Could not load image. Please check the file format.")
+            self.image = self.original_image.copy()
 
     def process(self, ink_color='black'):
         """

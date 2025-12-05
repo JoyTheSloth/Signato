@@ -27,13 +27,14 @@ def digitize_signature():
 
     ink_color = request.form.get('color', 'black')
     
-    # Save uploaded file temporarily
-    input_path = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(input_path)
+    # Process in memory - Vercel friendly
+    # Read file to numpy array
+    file_bytes = np.frombuffer(file.read(), np.uint8)
+    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
     
     try:
         # Process the image
-        digitizer = SignatureDigitizer(input_path)
+        digitizer = SignatureDigitizer(image)
         digitizer.process(ink_color=ink_color)
         
         # Save processed image to a buffer
@@ -43,8 +44,7 @@ def digitize_signature():
              
         io_buf = io.BytesIO(buffer)
         
-        # Clean up input file
-        os.remove(input_path)
+
         
         return send_file(
             io_buf,
