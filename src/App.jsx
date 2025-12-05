@@ -50,7 +50,7 @@ function App() {
     formData.append('color', selectedColor);
 
     try {
-      const response = await fetch('http://localhost:5000/api/digitize', {
+      const response = await fetch('/api/digitize', {
         method: 'POST',
         body: formData,
       });
