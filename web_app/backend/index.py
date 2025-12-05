@@ -6,8 +6,7 @@ import cv2
 import numpy as np
 import io
 
-# Add parent directory to path to import signature_digitizer
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+import io
 from signature_digitizer import SignatureDigitizer
 
 app = Flask(__name__)
