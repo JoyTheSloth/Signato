@@ -93,10 +93,12 @@ class SignatureDigitizer:
         # Mask for ink
         ink_mask = thresh > 0
         
-        output_img[ink_mask, 0] = color_val[0] # B
-        output_img[ink_mask, 1] = color_val[1] # G
-        output_img[ink_mask, 2] = color_val[2] # R
-        output_img[ink_mask, 3] = 255          # Alpha (Opaque for ink)
+        # Combine color and alpha into a single array for assignment
+        # color_val is (B, G, R). We add 255 for Alpha.
+        fill_color = np.array([color_val[0], color_val[1], color_val[2], 255], dtype=np.uint8)
+        
+        # Assign to all masked pixels at once
+        output_img[ink_mask] = fill_color
         
         # Background is already (0,0,0,0) which is transparent black.
 
