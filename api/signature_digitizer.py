@@ -90,15 +90,13 @@ class SignatureDigitizer:
         # but adaptive threshold gives binary. 
         # To get smoother edges, we could use the blurred gray image as a mask, but let's stick to the clean binary for now.
         
-        # Mask for ink
-        ink_mask = thresh > 0
+        # Get coordinates of ink pixels
+        # np.where returns a tuple of arrays, one for each dimension
+        y_indices, x_indices = np.where(thresh > 0)
         
-        # Combine color and alpha into a single array for assignment
-        # color_val is (B, G, R). We add 255 for Alpha.
-        fill_color = np.array([color_val[0], color_val[1], color_val[2], 255], dtype=np.uint8)
-        
-        # Assign to all masked pixels at once
-        output_img[ink_mask] = fill_color
+        # Assign to all masked pixels using integer array indexing
+        # This is the most compatible way to assign values
+        output_img[y_indices, x_indices] = [color_val[0], color_val[1], color_val[2], 255]
         
         # Background is already (0,0,0,0) which is transparent black.
 
