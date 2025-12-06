@@ -14,6 +14,7 @@ CORS(app)  # Enable CORS for all routes
 
 @app.route('/api/digitize', methods=['POST'])
 def digitize_signature():
+    print("Processing signature request...")
     try:
         if 'file' not in request.files:
             return jsonify({'error': 'No file part'}), 400
