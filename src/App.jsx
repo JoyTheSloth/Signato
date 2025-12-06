@@ -10,7 +10,7 @@ function App() {
   const [inkColor, setInkColor] = useState('black');
   const [error, setError] = useState(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [facingMode, setFacingMode] = useState('user'); // 'user' (front) or 'environment' (rear)
+  const [facingMode, setFacingMode] = useState('environment'); // Default to 'environment' (rear)
   const videoRef = React.useRef(null);
   const canvasRef = React.useRef(null);
 

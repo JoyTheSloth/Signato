@@ -18,7 +18,7 @@
 }
 
 * {
-  box_sizing: border-box;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -320,6 +320,20 @@ body {
 
   .app-header h1 {
     font-size: 2.5rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .file-select-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 }
 
