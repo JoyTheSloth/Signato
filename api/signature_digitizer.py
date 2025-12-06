@@ -90,13 +90,21 @@ class SignatureDigitizer:
         # but adaptive threshold gives binary. 
         # To get smoother edges, we could use the blurred gray image as a mask, but let's stick to the clean binary for now.
         
-        # Get coordinates of ink pixels
-        # np.where returns a tuple of arrays, one for each dimension
-        y_indices, x_indices = np.where(thresh > 0)
+        # Create separate channels for the output image
+        # This methodology avoids array indexing errors completely
         
-        # Assign to all masked pixels using integer array indexing
-        # This is the most compatible way to assign values
-        output_img[y_indices, x_indices] = [color_val[0], color_val[1], color_val[2], 255]
+        # 1. Create B, G, R channels filled with the ink color
+        b_channel = np.full((h, w), color_val[0], dtype=np.uint8)
+        g_channel = np.full((h, w), color_val[1], dtype=np.uint8)
+        r_channel = np.full((h, w), color_val[2], dtype=np.uint8)
+        
+        # 2. Use the threshold image directly as the Alpha channel
+        # thresh is 255 (white) for ink, and 0 (black) for background
+        # This effectively makes the ink opaque and background transparent
+        a_channel = thresh
+        
+        # 3. Merge channels to create final RGBA image
+        output_img = cv2.merge([b_channel, g_channel, r_channel, a_channel])
         
         # Background is already (0,0,0,0) which is transparent black.
 
