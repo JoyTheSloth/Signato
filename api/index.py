@@ -12,27 +12,23 @@ from signature_digitizer import SignatureDigitizer
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-UPLOAD_FOLDER = 'uploads'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
 @app.route('/api/digitize', methods=['POST'])
 def digitize_signature():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-
-    ink_color = request.form.get('color', 'black')
-    
-    # Process in memory - Vercel friendly
-    # Read file to numpy array
-    file_bytes = np.frombuffer(file.read(), np.uint8)
-    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-    
     try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        ink_color = request.form.get('color', 'black')
+        
+        # Process in memory - Vercel friendly
+        # Read file to numpy array
+        file_bytes = np.frombuffer(file.read(), np.uint8)
+        image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
         # Process the image
         digitizer = SignatureDigitizer(image)
         digitizer.process(ink_color=ink_color)
